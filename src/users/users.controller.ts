@@ -14,6 +14,11 @@ export class UsersController {
         return this.userService.getAllUsers();
     }
 
+    @Get('/info')
+    getInfo() {
+        return "This is a test app."
+    }
+
     @Get(':id')
     getUserById(@Param('id', ParseIntPipe) id: number): UserDto {
         return this.userService.getUserById(id);
