@@ -14,9 +14,9 @@ export class UsersController {
         return this.userService.getAllUsers();
     }
 
-    @Get('/info')
+    @Get('/whoamoi')
     getInfo() {
-        return "This is a test app."
+        return "yeyeluckysingh"
     }
 
     @Get(':id')
