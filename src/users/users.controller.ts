@@ -19,6 +19,11 @@ export class UsersController {
         return "yeyeluckysingh"
     }
 
+    @Get('/whoamoi/:name')
+    getUserName(@Param('name') name: string) {
+        return `Hello ${name}`;
+    }
+
     @Get(':id')
     getUserById(@Param('id', ParseIntPipe) id: number): UserDto {
         return this.userService.getUserById(id);

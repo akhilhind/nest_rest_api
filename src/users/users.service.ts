@@ -14,41 +14,91 @@ export class UsersService {
     ]
 
     getAllUsers(): UserDto[] {
-        return this.Users;
+        try {
+            return this.Users;
+        } catch (error) {
+            throw new Error('Error fetching all users');
+        }
     }
 
     getUserById(user_id: number): UserDto {
-        return this.Users.find(user => user.id == user_id);
+        try {
+            const user = this.Users.find(user => user.id == user_id);
+            if (!user) {
+                throw new Error(`No user with id:${user_id} exists.`);
+            }
+            return user;
+        } catch (error) {
+            throw new Error(`Error fetching user by id: ${error.message}`);
+        }
+    }
+
+    getEmailById(user_id: number): string {
+        try {
+            const user = this.Users.find(user => user.id == user_id);
+            if (!user) {
+                throw new Error(`No user with id:${user_id} exists.`);
+            }
+            return user.email;
+        } catch (error) {
+            throw new Error(`Error fetching email by id: ${error.message}`);
+        }
+    }
+
+    getUserNameById(user_id: number): string {
+        try {
+            const user = this.Users.find(user => user.id == user_id);
+            if (!user) {
+                throw new Error(`No user with id:${user_id} exists.`);
+            }
+            return user.name;
+        } catch (error) {
+            throw new Error(`Error fetching username by id: ${error.message}`);
+        }
     }
 
     addUser(user: CreateUserDto): {user_id: number} {
-        let new_user_id = this.user_number++;
-        this.Users.push({
-            id: new_user_id,
-            ...user
-        });
-        return {user_id: new_user_id};
+        try {
+            const new_user_id = this.user_number++;
+            this.Users.push({
+                id: new_user_id,
+                ...user
+            });
+            return { user_id: new_user_id };
+        } catch (error) {
+            throw new Error(`Error adding new user: ${error.message}`);
+        }
     }
 
     deleteUser(user_id: number): string {
-        let newData = this.Users.filter(user => user.id !== user_id);
-        if (newData.length == this.Users.length) {
-            return `No user with id:${user_id} exists.`;
+        try {
+            let newData = this.Users.filter(user => user.id !== user_id);
+            if (newData.length == this.Users.length) {
+                throw new Error(`No user with id:${user_id} exists.`);
+            }
+            this.Users = newData;
+            return `User with id:${user_id} deleted.`;
+        } catch (error) {
+            throw new Error(`Error deleting user: ${error.message}`);
         }
-        this.Users = newData;
-        return `User with id:${user_id} deleted.`;
     }
 
     updateUser(id: number, newUserData: UpdateUserDto): UserDto | string {
-        let updatedUser: UserDto | null = null;
-        this.Users = this.Users.map(user => {
-            // return user.id == id ? {...user, ...newUserData} : user;
-            if(user.id == id) {
-                updatedUser = { ...user, ...newUserData};
-                return updatedUser;
+        try {
+            let updatedUser: UserDto | null = null;
+            this.Users = this.Users.map(user => {
+                if (user.id == id) {
+                    updatedUser = { ...user, ...newUserData };
+                    return updatedUser;
+                }
+                return user;
+            });
+            if (updatedUser == null) {
+                throw new Error(`No user with id: ${id} exists.`);
             }
-            return user;
-        });
-        return updatedUser == null ? `No user with id: ${id} exists.` : updatedUser
+            return updatedUser;
+        } catch (error) {
+            throw new Error(`Error updating user: ${error.message}`);
+        }
     }
 }
